@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 8, 168, 117)),
         ),
-        home: MyHomePage(),
+        home: const MyHomePage(),
       ),
     );
   }
@@ -71,10 +71,13 @@ class _MyHomePageState extends State<MyHomePage> {
         page = const GeneratorPage();
         break;
       case 1:
-        page = FavoritesPage();
+        page = const FavoritesPage();
         break;
       case 2:
-        page = HistoryPage();
+        page = const HistoryPage();
+        break;
+      case 3:
+        page = const CounterPage(); // Counter page added
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -101,6 +104,10 @@ class _MyHomePageState extends State<MyHomePage> {
               selectedIcon: Icon(Icons.history),
               icon: Icon(Icons.history_outlined),
               label: "History"),
+          NavigationDestination(
+              selectedIcon: Icon(Icons.countertops),
+              icon: Icon(Icons.access_alarm_outlined),
+              label: "Counter"), // Added Counter tab
         ],
       ),
       body: Container(child: page),
@@ -108,6 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+// Generator Page
 class GeneratorPage extends StatelessWidget {
   const GeneratorPage({
     super.key,
@@ -185,6 +193,7 @@ class BigCard extends StatelessWidget {
   }
 }
 
+// Favorites Page
 class FavoritesPage extends StatelessWidget {
   const FavoritesPage({super.key});
 
@@ -259,6 +268,7 @@ class FavoritesPage extends StatelessWidget {
   }
 }
 
+// History Page
 class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key});
 
@@ -296,7 +306,7 @@ class HistoryPage extends StatelessWidget {
                     backgroundColor: const Color.fromARGB(255, 8, 168, 117),
                     foregroundColor: Colors.white,
                   ),
-                  child: Text("Clear All"),
+                  child: const Text("Clear All"),
                 ),
               ],
             ),
@@ -333,6 +343,165 @@ class HistoryPage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// Counter Page
+class CounterPage extends StatefulWidget {
+  const CounterPage({super.key});
+
+  @override
+  _CounterPageState createState() => _CounterPageState();
+}
+
+class _CounterPageState extends State<CounterPage> {
+  int _number = 1;
+
+  void _checkNumber() {
+    if (_number % 5 == 0 && _number > 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Nomer kamu adalah $_number'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      showDialog(
+        context: context,
+        builder: (context) {
+          Future.delayed(const Duration(seconds: 3), () {
+            Navigator.of(context).pop();
+          });
+
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            child: Center(
+              child: Image.asset('assets/meme.jpg'), // Pastikan meme.jpg ada di assets folder
+            ),
+          );
+        },
+      );
+    }
+  }
+
+  void _multiplyByTwo() {
+    setState(() {
+      _number *= 2;
+    });
+    _checkNumber();
+  }
+
+  void _minesByTwo() {
+    setState(() {
+      _number -= 2;
+    });
+    _checkNumber();
+  }
+
+  void _resetButton() {
+    setState(() {
+      _number = 0;
+    });
+    _checkNumber();
+  }
+
+  void _sumByOne() {
+    setState(() {
+      _number += 1;
+    });
+    _checkNumber();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Counter Page'),
+        backgroundColor: Colors.blueAccent,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            // Styling the number with a border
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.blueAccent, width: 2),
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.blue[50],
+              ),
+              child: Text(
+                'Angka: $_number',
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueAccent,
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
+
+            // Row for the buttons aligned horizontally
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: _sumByOne,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  ),
+                  child: const Text('Tambah'),
+                ),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: _multiplyByTwo,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  ),
+                  child: const Text('Kali'),
+                ),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: _minesByTwo,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  ),
+                  child: const Text('Kurang'),
+                ),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: _resetButton,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orangeAccent,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  ),
+                  child: const Text('Reset'),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
